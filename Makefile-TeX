@@ -1,0 +1,80 @@
+# LaTeX Makefile
+#	*.aux\
+#	*.bbl\
+
+LATEXFILES = 	*.acn\
+	*.acr\
+	*.alg\
+	*.bcf\
+	*.blg\
+	*.dvi\
+	*.fdb_latexmk\
+	*.glg\
+	*.glo\
+	*.gls\
+	*.idx\
+	*.ilg\
+	*.ind\
+	*.ist\
+	*.loa\
+	*.lof\
+	*.log\
+	*.lot\
+	*.maf\
+	*.mtc\
+	*.mtc*\
+	*.nav\
+	*.nlo\
+	*.out\
+	*.pdfsync\
+	*.ps\
+	*.run.xml\
+	*.snm\
+	*.synctex.gz\
+	*.toc\
+	*.vrb\
+	*.xdy\
+	*.tdo\
+
+#-- Usually, only these lines need changing --#
+# The name of tex file without suffix
+filename=main
+# The name of bib file without suffix
+bibname=main
+#---------------------------------------------#
+
+all:
+	make clean
+	make ${filename}.bbl
+	make pdf
+	make show
+
+${filename}.bbl: ${bibname}.bib
+	-latex ${filename}.tex
+	#or use option -interaction=nonstopmode
+	bibtex ${filename}
+
+pdf:
+	pdflatex ${filename}.tex
+
+show:
+	evince ${filename}.pdf &
+
+zip:
+	rm -f ${filename}.zip
+	zip ${filename}.zip ${filename}.tex ${filename}.pdf ${filename}.bib \
+		${filename}.aux ${filename}.bbl Makefile figures/*
+
+clean:
+	rm -f $(LATEXFILES)
+	rm -f ${filename}Notes.bib
+	rm -f ${filename}.pdf
+
+cleanall:
+	make clean
+	rm -f ${filename}.aux ${filename}.bbl
+
+write:
+	vim $(filename).tex
+
+.PHONY: all pdf show clean cleanall write
